@@ -1,10 +1,14 @@
-# Интернет магазин на основе Framework Django
+# Интернет-магазин на основе framework Django
 
- Интернет магазин в рамках обучения на портале Geekbrains
- 
- ##
- 
- Python>3.6
- Django<3.0
- 
- 
+Интернет магазин разработан в рамках прохождения факультета Python-разработки, портал GeekBrains, на курсе `Framework Django`.
+
+## Стек
+
+* Python>3.5
+* Django<3.0
+* VSCode
+* SQLite3
+
+## Лицензия
+
+MIT
