@@ -7,7 +7,7 @@ class ProductCategory(models.Model):
     description = models.TextField(verbose_name="описание", blank=True)
 
     def __str__(self):
-        return self.names
+        return self.name
 
 class Product(models.Model):
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
