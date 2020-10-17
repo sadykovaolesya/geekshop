@@ -37,7 +37,7 @@ def register(request):
         if register_form.is_valid():
             register_form.save()
             return HttpResponseRedirect(reverse("auth:login"))
-    else: 
+    else:
         register_form = ShopUserRegisterForm()
     content = {"title": title, "register_form": register_form}
     return render(request, "authnapp/register.html", content)

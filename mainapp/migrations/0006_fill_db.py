@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def forwards_func(apps, schema_editor):
     pro_cat_model = apps.get_model("mainapp", "ProductCategory")  # Load model for make changes
     pro_model = apps.get_model("mainapp", "Product")  # Load model for make changes
@@ -163,6 +164,6 @@ def reverse_func(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [('mainapp', '0005_contact')]
+    dependencies = [("mainapp", "0005_contact")]
 
-    operations = [migrations.RunPython(forwards_func, reverse_func)] 
+    operations = [migrations.RunPython(forwards_func, reverse_func)]
