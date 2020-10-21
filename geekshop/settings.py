@@ -131,3 +131,5 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 MEDIA_URL = "/madia/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "madia")
+
+LOGIN_URL = "authnapp:login"
