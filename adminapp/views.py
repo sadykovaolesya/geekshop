@@ -19,9 +19,15 @@ def admin_main(request):
     return response
 
 
-class UsersListView(LoginRequiredMixin, ListView):
+class UsersListView(LoginRequiredMixin, ListView):        
+    
     model = ShopUser
     template_name = "adminapp/users.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "админка/пользователи"
+        return context
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -91,6 +97,11 @@ class ProductCategoryCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("admin:categories")
     fields = "__all__"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "категории/создание"
+        return context
+
 
 class ProductCategoryUpdateView(LoginRequiredMixin, UpdateView):
     model = ProductCategory
@@ -108,6 +119,11 @@ class ProductCategoryDeleteView(LoginRequiredMixin, DeleteView):
     model = ProductCategory
     template_name = "adminapp/category_delete.html"
     success_url = reverse_lazy("admin:categories")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "категории/удаление"
+        return context
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -146,6 +162,11 @@ def product_create(request, pk):
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = "adminapp/product_read.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = "продукт/лист"
+        return context
 
 
 @user_passes_test(lambda u: u.is_superuser)
