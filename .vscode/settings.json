@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/lis/geekshop/venv/bin/python",
+    "python.pythonPath": "/home/lis/.pyenv/versions/geekshop/bin/python",
     "python.formatting.provider": "black",
     "python.formatting.blackArgs": [
         "-l 120"
