@@ -218,7 +218,9 @@ fabric.properties
 .history/
 
 # geekshop --->
+.secret
 
 tmp
 
 # <--- geekshop
+
