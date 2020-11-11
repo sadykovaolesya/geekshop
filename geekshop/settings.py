@@ -65,10 +65,8 @@ TEMPLATES = [
                 "mainapp.context_processors.basket",
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
-<<<<<<< HEAD
-=======
                 "django.template.context_processors.media",
->>>>>>> 1bead4363a233af3c8cb884f7896f4148460c597
+
             ],
         },
     },
