@@ -37,3 +37,4 @@ class Basket(models.Model):
     @staticmethod
     def get_item(pk):
         return get_object_or_404(Basket, pk=pk)
+        

@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = "pzegz3ade%pvc00#@7bxcz9mt8tv(^l!5a9iks0t_@)ra#&om$"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "crispy_forms",
     "mainapp",
     "authnapp",
     "basketapp",
@@ -34,9 +35,13 @@ INSTALLED_APPS = [
     "ordersapp",
 ]
 
+# Django Crispy Forms
+#   Official docs | https://django-crispy-forms.readthedocs.io/en/latest/
+#   Tutorial (ru) | https://django.fun/tutorials/django-i-formy-bootstrap-4/
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
 # Auth model
 AUTH_USER_MODEL = "authnapp.ShopUser"
-
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -66,7 +71,6 @@ TEMPLATES = [
                 "social_django.context_processors.backends",
                 "social_django.context_processors.login_redirect",
                 "django.template.context_processors.media",
-
             ],
         },
     },
@@ -78,17 +82,24 @@ WSGI_APPLICATION = "geekshop.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# Change database to PostgreSQL
 DATABASES = {
+    # "default": {
+    #     "ENGINE": "django.db.backends.sqlite3",
+    #     "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+    # }
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "NAME": "geekshop",
+        "ENGINE": "django.db.backends.postgresql",
+        "USER": "django",
+        "PASSWORD": "geekbrains",
+        "HOST": "localhost",
     }
 }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
-
 
 if not DEBUG:
     AUTH_PASSWORD_VALIDATORS = [
@@ -109,6 +120,7 @@ else:
     # Set simple password for debug
     AUTH_PASSWORD_VALIDATORS = []
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -128,12 +140,19 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+# In common case STATIC_ROOT can not be in STATICFILES_DIRS
+if DEBUG:
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+# Media files
 MEDIA_URL = "/media/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+# Set login path:
+#   https://docs.djangoproject.com/en/2.2/ref/settings/#login-url
 LOGIN_URL = "authnapp:login"
 
 DOMAIN_NAME = "http://localhost:8000"
@@ -161,28 +180,33 @@ EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = "tmp/email-messages/"
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'social_core.backends.github.GithubOAuth2',
+    "django.contrib.auth.backends.ModelBackend",
     "social_core.backends.vk.VKOAuth2",
-
+    "social_core.backends.github.GithubOAuth2",
 )
 
-# SOCIAL_AUTH_AUTHENTICATION_BACKENDS = ('social_auth.backends.contrib.github.GithubBackend',)
+# SOCIAL_AUTH_AUTHENTICATION_BACKENDS = ("social_core.backends.vk.VKOAuth2",)
 SOCIAL_AUTH_URL_NAMESPACE = "social"
 
-# Load settings from file
-with open(".secret/github.json", "r") as f:
-    GITHUB = json.load(f)
+# You can save settings in file, but not in GIT!
+# SOCIAL_AUTH_VK_OAUTH2_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+# SOCIAL_AUTH_VK_OAUTH2_SECRET = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
-
-SOCIAL_AUTH_GITHUB_KEY = GITHUB["SOCIAL_AUTH_GITHUB_KEY"]
-SOCIAL_AUTH_GITHUB_SECRET = GITHUB["SOCIAL_AUTH_GITHUB_SECRET"]
-
-with open(".secret/vk.json", "r") as f:
+# Load settings from file for Vk
+with open(".secrets/vk.json", "r") as f:
     VK = json.load(f)
 
 SOCIAL_AUTH_VK_OAUTH2_KEY = VK["SOCIAL_AUTH_VK_OAUTH2_APPID"]
 SOCIAL_AUTH_VK_OAUTH2_SECRET = VK["SOCIAL_AUTH_VK_OAUTH2_KEY"]
+
+# Load settings from file for GitHub
+with open(".secrets/github.json", "r") as f:
+    github_secrets = json.load(f)
+
+SOCIAL_AUTH_GITHUB_KEY = github_secrets["SOCIAL_AUTH_GITHUB_KEY"]
+SOCIAL_AUTH_GITHUB_SECRET = github_secrets["SOCIAL_AUTH_GITHUB_SECRET"]
+
+LOGIN_ERROR_URL = "/"
 
 SOCIAL_AUTH_VK_OAUTH2_IGNORE_DEFAULT_SCOPE = True
 # Full list of scope here:

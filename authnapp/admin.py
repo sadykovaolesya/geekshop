@@ -1,8 +1,11 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
 from .models import ShopUser
 
-# Register your models here.
+
+class ShopUserAdmin(UserAdmin):
+    pass
 
 
-admin.site.register(ShopUser)
+admin.site.register(ShopUser, ShopUserAdmin)
