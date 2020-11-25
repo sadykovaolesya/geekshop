@@ -14,7 +14,9 @@ from ordersapp.forms import OrderItemForm
 from ordersapp.models import Order, OrderItem
 
 
-class OrderList(ListView):
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class OrderList(LoginRequiredMixin, ListView):
     model = Order
 
     def get_queryset(self):
@@ -84,10 +86,12 @@ class OrderItemsUpdate(UpdateView):
     def get_context_data(self, **kwargs):
         data = super(OrderItemsUpdate, self).get_context_data(**kwargs)
         OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemForm, extra=1)
+
         if self.request.POST:
             data["orderitems"] = OrderFormSet(self.request.POST, instance=self.object)
         else:
-            formset = OrderFormSet(instance=self.object)
+            queryset = self.object.orderitems.select_related()
+            formset = OrderFormSet(instance=self.object, queryset=queryset)
             for form in formset.forms:
                 if form.instance.pk:
                     form.initial["price"] = form.instance.product.price
@@ -110,7 +114,6 @@ class OrderItemsUpdate(UpdateView):
 
         return super(OrderItemsUpdate, self).form_valid(form)
 
-
 class OrderDelete(DeleteView):
     model = Order
     success_url = reverse_lazy("ordersapp:orders_list")
@@ -127,22 +130,6 @@ def order_forming_complete(request, pk):
 @receiver(pre_save, sender=OrderItem)
 @receiver(pre_save, sender=Basket)
 def product_quantity_update_save(instance, sender, **kwargs):
-<<<<<<< HEAD
-    if instance.pk:
-        instance.product.quantity -= instance.quantity - sender.get_item(instance.pk).quantity
-    else:
-        instance.product.quantity -= instance.quantity
-    instance.product.save()
-    #quantity_total = instance.product.reserved + instance.product.quantity
-    #quantity_delta = quantity_total - instance.quantity
-    #if quantity_delta < 0:
-    #    instance.product.reserved = quantity_total
-    #    instance.quantity = instance.product.reserved
-    #else:
-    #    instance.product.reserved = instance.quantity
-    #    instance.product.quantity = quantity_delta
-    #instance.product.save()
-=======
     # if instance.pk:
     #     instance.product.quantity -= instance.quantity - sender.get_item(instance.pk).quantity
     # else:
@@ -157,18 +144,13 @@ def product_quantity_update_save(instance, sender, **kwargs):
         instance.product.reserved = instance.quantity
         instance.product.quantity = quantity_delta
     instance.product.save()
->>>>>>> f7cf84b5d5c53e9c1fa1d70410c8bb2cf4283c55
+
 
 
 @receiver(pre_delete, sender=OrderItem)
 @receiver(pre_delete, sender=Basket)
 def product_quantity_update_delete(instance, **kwargs):
-<<<<<<< HEAD
-    instance.product.quantity += instance.quantity   
- #   instance.product.quantity += instance.product.reserved   
- #   instance.product.reserved = 0
-    instance.product.save()
-=======
+
     instance.product.quantity += instance.product.reserved
     instance.product.reserved = 0
     instance.product.save()
@@ -181,4 +163,4 @@ def get_product_price(request, pk):
             return JsonResponse({"price": product.price})
         else:
             return JsonResponse({"price": 0})
->>>>>>> f7cf84b5d5c53e9c1fa1d70410c8bb2cf4283c55
+
